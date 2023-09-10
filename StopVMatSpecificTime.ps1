@@ -1,8 +1,8 @@
 #
-# Start-Stop powershell script, by PLE on 08/0è/2021
-# Automation system managed identity need VM Contributor at RG level and Reader at Sub level
+# Start-Stop powershell script
+# Note: Automation needs system managed identity with VM Contributor at RG level and Reader at Sub level
 # Param for Action: start, stop
-#
+# Last updated: 06/02/2023
 
 param (
     [string]$ResourceGroup,
@@ -19,6 +19,16 @@ if ($ResourceGroup -eq "" -or $VMName -eq "") {
     Write-Output "Required variable uninitialized.";
     exit
 }
+
+# Sign in to your Azure subscription
+$sub = Get-AzSubscription -ErrorAction SilentlyContinue
+if(-not($sub))
+{
+    Connect-AzAccount
+}
+
+# If you have multiple subscriptions, set the one to use
+# Select-AzSubscription -SubscriptionId <SUBSCRIPTIONID>
 
 # Ensures you do not inherit an AzContext in your runbook
 Disable-AzContextAutosave -Scope Process | Out-Null
