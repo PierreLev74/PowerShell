@@ -20,11 +20,15 @@ if ($ResourceGroup -eq "" -or $VMName -eq "") {
     exit
 }
 
-# Sign in to your Azure subscription
-$sub = Get-AzSubscription -ErrorAction SilentlyContinue
-if(-not($sub))
+# Connect using a Managed Service Identity
+try
 {
-    Connect-AzAccount
+    "Logging in to Azure with Managed Service Identity..."
+    Connect-AzAccount -Identity
+}
+catch {
+    Write-Error -Message $_.Exception
+    throw $_.Exception
 }
 
 # If you have multiple subscriptions, set the one to use
